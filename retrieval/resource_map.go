@@ -117,10 +117,25 @@ var ProxyResourceMap = ResourceMap{
 	},
 }
 
+var AggregatedProxyResourceMap = ResourceMap{
+	Type:       "apigee.googleapis.com/Proxy",
+	MatchLabel: "__meta_kubernetes_pod_label_type_aggregate_proxy",
+	LabelMap: map[string]labelTranslation{
+		ProjectIDLabel:          constValue("resource_container"),
+		KubernetesLocationLabel: constValue("location"),
+		"org":                   constValue("org"),
+		"env":                   constValue("env"),
+		"proxy_name":            constValue("proxy_name"),
+		"revision":              constValue("revision"),
+		"pod":                   constValue("host"),
+	},
+}
+
 type ResourceMapList []ResourceMap
 
 // When you add new elements, you also probably want to update TestResourceMappingsOrder.
 var ResourceMappings = ResourceMapList{
+	AggregatedProxyResourceMap,
 	ProxyResourceMap,
 	DevappResourceMap,
 	{
