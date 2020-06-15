@@ -769,7 +769,7 @@ func processFileConfig(fc fileConfig) (map[string]string, []*metadata.Entry, ret
 			// Convert "untyped" to the "unknown" type used internally as of Prometheus 2.5.
 			sm.Type = textparse.MetricTypeUnknown
 		case textparse.MetricTypeCounter, textparse.MetricTypeGauge, textparse.MetricTypeHistogram,
-			textparse.MetricTypeSummary, textparse.MetricTypeUnknown:
+			textparse.MetricTypeSummary, textparse.MetricTypeUnknown, metadata.MetricFederatedHistogram:
 		default:
 			return nil, nil, nil, errors.Errorf("invalid metric type %q", sm.Type)
 		}

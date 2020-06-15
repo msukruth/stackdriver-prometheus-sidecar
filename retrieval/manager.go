@@ -166,7 +166,7 @@ func (r *PrometheusReader) Run(ctx context.Context, startOffset int) error {
 	)
 	go seriesCache.run(ctx)
 
-	builder := &sampleBuilder{series: seriesCache}
+	builder := &sampleBuilder{series: seriesCache, logger: r.logger}
 
 	// NOTE(fabxc): wrap the tailer into a buffered reader once we become concerned
 	// with performance. The WAL reader will do a lot of tiny reads otherwise.

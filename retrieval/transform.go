@@ -15,12 +15,16 @@ package retrieval
 
 import (
 	"context"
+	"github.com/google/go-cmp/cmp"
+
 	"math"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 	timestamp_pb "github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/pkg/errors"
 	"github.com/prometheus/prometheus/pkg/textparse"
@@ -33,6 +37,7 @@ import (
 
 type sampleBuilder struct {
 	series seriesGetter
+	logger log.Logger
 }
 
 // next extracts the next sample from the TSDB input sample list and returns
@@ -225,9 +230,12 @@ Loop:
 			continue
 		}
 		name := e.lset.Get("__name__")
+		level.Warn(b.logger).Log("build distribution: metric name", name)
 		// The series matches if it has the same base name, the remainder is a valid histogram suffix,
 		// and the labels aside from the le and __name__ label match up.
 		if !strings.HasPrefix(name, baseName) || !histogramLabelsEqual(e.lset, matchLset) {
+			level.Warn(b.logger).Log("lset, matchlset diff", cmp.Diff(e.lset, matchLset))
+			//level.Warn(b.logger).Log("break", "has prefix, histogram label equal", "name", name, "basename", baseName, "elset", e.lset, "matchlset", matchLset)
 			break
 		}
 		// In general, a scrape cannot contain the same (set of) series repeatedlty but for different timestamps.

@@ -49,6 +49,7 @@ const DefaultEndpointPath = "api/v1/targets/metadata"
 // The old metric type value for textparse.MetricTypeUnknown that is used in
 // Prometheus 2.4 and earlier.
 const MetricTypeUntyped = "untyped"
+const MetricFederatedHistogram = "federatedHistogram"
 
 type Entry struct {
 	Metric     string

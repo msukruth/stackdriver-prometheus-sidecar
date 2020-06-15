@@ -18,7 +18,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Stackdriver/stackdriver-prometheus-sidecar/metadata"
+	md "github.com/Stackdriver/stackdriver-prometheus-sidecar/metadata"
 	"github.com/Stackdriver/stackdriver-prometheus-sidecar/targets"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -95,7 +95,7 @@ type seriesCache struct {
 
 type seriesCacheEntry struct {
 	proto    *monitoring_pb.TimeSeries
-	metadata *metadata.Entry
+	metadata *md.Entry
 	lset     labels.Labels
 	suffix   string
 	hash     uint64
@@ -392,7 +392,7 @@ func (c *seriesCache) refresh(ctx context.Context, ref uint64) error {
 	if err != nil {
 		return errors.Wrap(err, "get metadata")
 	}
-	if metadata == nil {
+	if metadata == nil || metadata.MetricType == md.MetricFederatedHistogram {
 		// The full name didn't turn anything up. Check again in case it's a summary,
 		// histogram, or counter without the metric name suffix.
 		var ok bool
